@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+## A Fauna authentication skeleton from the frontend.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository is a basic Fauna skeleton that implements authentication from the front-end with React. This implementation is keeping access tokens with a lifetime of one hour in browser memory. It is combines functionality from the following [blueprints](https://github.com/fauna-labs/fauna-blueprints): 
 
-## Available Scripts
+- [register-login-logout](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/register-login-logout): basic register, login and logout functionality
+- [validation](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/validation): email and password validation
+- [rate-limiting](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/rate-limiting): rate-limiting and limiting of the amount of calls a user can do for a specific action plus reset functionality to remove previous logs for that action.
+- [password-reset](https://github.com/fauna-labs/fauna-blueprints/tree/main/official/auth/password-reset): the change password function is used to change the password by providing the old password.
 
-In the project directory, you can run:
+### Setup
 
-### `npm start`
+To use the skeleton, clone it:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+git@github.com:fauna-labs/faunadb-auth-skeleton-frontend.git
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Run npm install:
 
-### `npm test`
+```
+npm install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Create a database and a Fauna admin key via the shell or Fauna [dashboard](https://dashboard.fauna.com/). Save this key in a file `.env.local` in the project root.
 
-### `npm run build`
+Provision the Fauna resources with the [Fauna Schema Migrate](https://github.com/fauna-labs/fauna-schema-migrate) tool. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Generate a migration from the resources in `fauna/resources`
+```
+npx fauna-schema-migrate generate
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Apply the migration, adding collections, indexes and functions to your live database.
+```
+FAUNA_ADMIN_KEY=<my fauna key> npx fauna-schema-migrate apply all
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Run the frontend: 
 
-### `npm run eject`
+```
+npm run start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Populate some example data
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Run the following query in the Fauna dashboard shell of your database. 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+Do(
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Skinny Dino',
+      icon: 'skinny_dino.png',
+      rarity: 'exotic'
+    }
+  }),
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Metal Dino',
+      icon: 'metal_dino.png',
+      rarity: 'common'
+    }
+  }),
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Flower Dino',
+      icon: 'flower_dino.png',
+      rarity: 'rare'
+    }
+  }),
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Grumpy Dino',
+      icon: 'grumpy_dino.png',
+      rarity: 'legendary'
+    }
+  }),
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Old Gentleman Dino',
+      icon: 'old_gentleman_dino.png',
+      rarity: 'legendary'
+    }
+  }),
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Old Lady Dino',
+      icon: 'old_lady_dino.png',
+      rarity: 'epic'
+    }
+  }),
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Sitting Dino',
+      icon: 'sitting_dino.png',
+      rarity: 'common'
+    }
+  }),
+  Create(Collection('dinos'), {
+    data: {
+      name: 'Sleeping Dino',
+      icon: 'sleeping_dino.png',
+      rarity: 'uncommon'
+    }
+  })
+)
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Features
 
-## Learn More
+- Login
+- Register
+- Logout
+- Change password when logged in
+- Block calls on 3 faulty logins. 
+- Authorization rules for public data, data for regular logged in users and admin users. Give a user admin privileges by changing his document and providing him with a `type: "admin"` field. 
+- Identity-based rate-limiting for logged-in users and separate rate-limiting for anonymous users. 
+- Validation on the email and password field when registering. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
