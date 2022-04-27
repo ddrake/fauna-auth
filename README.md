@@ -21,7 +21,7 @@ Run npm install:
 npm install
 ```
 
-Create a database and a Fauna admin key via the shell or Fauna [dashboard](https://dashboard.fauna.com/). Save this key in a file `.env.local` in the project root.
+Create a database and a Fauna admin key `<my fauna key>` via the shell or Fauna [dashboard](https://dashboard.fauna.com/). Create a file `.env.local` in the project root with contents `FAUNA_ADMIN_KEY=<my fauna admin secret>`.  Note: ensure that this file is in `.gitignore`. It should not be committed to your repository!
 
 Provision the Fauna resources with the [Fauna Schema Migrate](https://github.com/fauna-labs/fauna-schema-migrate) tool. 
 
@@ -30,9 +30,15 @@ Generate a migration from the resources in `fauna/resources`
 npx fauna-schema-migrate generate
 ```
 
-Apply the migration, adding collections, indexes and functions to your live database.
+Apply the migration, adding collections, indexes, functions and roles to your live database.  Note: In case `fauna-schema-migrate` isn't able to access the `FAUNA_ADMIN_KEY` directly from `.env.local`, prefix the `fauna-schema-migrate apply` call with the key/value like this:
 ```
-FAUNA_ADMIN_KEY=<my fauna key> npx fauna-schema-migrate apply all
+FAUNA_ADMIN_KEY=<my fauna admin secret> npx fauna-schema-migrate apply all
+```
+
+In the Fauna dashboard, select the database you created.  You should see the generated collections, indexes, functions and roles.  In particular, you should see a role called `public`.  This role has limited permissions.  On the Security tab, click `NEW KEY`, select the `public` role and click Save.  Add the generated secret to your `.env.local` like this:
+
+```
+REACT_APP_LOCAL___BOOTSTRAP_KEY=<my public role secret>
 ```
 
 Run the frontend: 
