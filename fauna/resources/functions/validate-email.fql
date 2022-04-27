@@ -1,0 +1,19 @@
+CreateFunction({
+  name: 'validate_email',
+  body: Query(
+    Lambda(
+      ['email'],
+      If(
+        ContainsStrRegex(
+          Var('email'),
+          "^[^\s@]+@[^\s@]+\.[^\s@]+$"
+        ),
+        // If it's valid, we continue with the original statement
+        true,
+        // Else we Abort!
+        Abort('Invalid e-mail provided')
+      )
+    )
+  ),
+  role: 'server'
+})

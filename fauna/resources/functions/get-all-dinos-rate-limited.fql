@@ -1,0 +1,20 @@
+CreateFunction({
+  name: 'get_all_dinos_rate_limited',
+  body: Query(
+    Lambda(
+      [],
+      Do(
+        // logged in people get 2 calls per minute, anonymous 10 per minute.
+        Call(
+          'rate_limit',
+          'get_dinos',
+          If(HasCurrentIdentity(), CurrentIdentity(), 'anonymous'),
+          If(HasCurrentIdentity(), 2, 10),
+          60000
+        ),
+        Call('get_all_dinos')
+      )
+    )
+  ),
+  role: 'server'
+})
