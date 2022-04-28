@@ -18,8 +18,8 @@ $hard-white: rgba(255,255,255,0.95);
 $grid-unit: 30px;
 $touch-target-min: 36px;
 $touch-target: 44px;
-$border-radius: calc( #{$grid-unit} / 4);
-$border-radius-round: calc( #{$grid-unit} / 1.5);
+$border-radius: calc($grid-unit / 4);
+$border-radius-round: calc($grid-unit / 1.5);
 
 @import "./components/button";
 @import "./components/form";
