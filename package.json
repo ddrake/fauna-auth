@@ -42,7 +42,7 @@
     "dotenv": "^16.0.1",
     "envfile": "^6.17.0",
     "esm": "^3.2.25",
-    "prettier-eslint-cli": "^6.0.1",
+    "prettier-eslint-cli": "^7.0.1",
     "readline-promise": "^1.0.4"
   }
 }
